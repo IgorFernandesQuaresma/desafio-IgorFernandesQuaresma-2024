@@ -22,21 +22,77 @@ class RecintosZoo {
     }
 
     analisaRecintos(animal, quantidade) {
+    
+
         const animalHabilitado = this.animaisHabilitados.find(ani => ani.tipo === animal);
+    
         if (!animalHabilitado) {
             return { erro: "Animal inválido", recintosViaveis: null };
         }
-
+    
         if (quantidade <= 0) {
             return { erro: "Quantidade inválida", recintosViaveis: null };
         }
         
+        let recintosViaveis = [];
+    
+        this.recintos.forEach (recinto => {
+            
+            //Verifica seo bioma é compativel com o bioma e faz uma verificação para o recinto savana e rio
+            const biomaValido = animalHabilitado.bioma.includes(recinto.bioma) || 
+                (recinto.bioma === "savana e rio" && animalHabilitado.bioma.includes("savana") || animalHabilitado.bioma.includes("rio"));
+    
+            if (!biomaValido) return;
 
-    } 
+
+            //verifica se o recinto tem animal, caso sim verifica se o animal selecionado é carnivoro e n coloca
+            const recintoComAnimais = recinto.animaisExistentes.length > 0;
+
+            if (animalHabilitado.carnivoro && recintoComAnimais) {
+                const existeOutroAnimal = recinto.animaisExistentes.some(ani => ani.tipo !== animal);
+                if (existeOutroAnimal) return; 
+            }
+    
+            //verifica se o recinto tem carnivororo, caso sim verifica se é da mesma especie
+            const recintoContemCarnivoro = recinto.animaisExistentes.some(ani => {
+                let infoAnimal = this.animaisHabilitados.find(a => a.tipo === ani.tipo);
+                return infoAnimal.carnivoro;
+            });
+
+            if (recintoContemCarnivoro && !animalHabilitado.carnivoro) return; 
+    
+    
         
+            let espacoOcupado = recinto.animaisExistentes.reduce((total, ani) => {
+                let infoAnimal = this.animaisHabilitados.find(a => a.tipo === ani.tipo);
+                return total + (infoAnimal.tamanho * ani.quantidade);
+            }, 0);
+    
+            const espacoNecessario = animalHabilitado.tamanho * quantidade;
+            const espacoDisponivel = recinto.tamanhoTotal - espacoOcupado;
+            const espacoLivreApos = recinto.tamanhoTotal - (espacoOcupado + espacoNecessario) ;
 
-}
+            if (espacoDisponivel < espacoNecessario) return;
 
+            recintosViaveis.push(`Recinto ${recinto.numero} (espaço livre: ${espacoLivreApos} total: ${recinto.tamanhoTotal})`);
+            
+            console.log('Espaço livre:', espacoLivreApos); 
+
+    /*fecha foreach*/});
+            if (recintosViaveis.length > 0) {
+                return { recintosViaveis };
+            } else {
+                return { erro: "Não há recinto viável" };
+            }
+/*fecha classe*/}} 
+    
+
+const zoo = new RecintosZoo();
+const resultado = zoo.analisaRecintos("MACACO", 10);
+console.log(resultado);
 
 
 export { RecintosZoo as RecintosZoo };
+
+
+
