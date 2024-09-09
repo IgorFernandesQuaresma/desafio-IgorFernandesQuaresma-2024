@@ -1,5 +1,11 @@
 # RECINTOS DO ZOO
 
+# Existe um problema no teste 
+Segundo esse item o macaco n pode estar em ambientes vazios
+5) Um macaco não se sente confortável sem outro animal no recinto, seja da mesma ou outra espécie. 
+Porem segundo as saidas esperadas os locais vazios estão sendo considerados, dito isso, eu também considerei os locais vazios e não apliquei a logica do item 5. Desta forma respeitamos os testes previamente escritos. Mas ressalto que não está conforme o enunciado.
+
+
 ## COMO BAIXAR O CÓDIGO E SUBMETER MINHA SOLUÇÃO?
 Para completar a etapa do desafio você terá que baixar a estrutura do código aqui na Azure, resolver o desafio usando Javascript e entregá-lo no repositório no seu github.
 
